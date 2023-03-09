@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 setuptools.setup(
     name='bbase',
     install_requires=['numpy'],
-    version='0.0.1',
+    version=__version__,
     author='Emile Jacquard',
     author_email='emile.jacquard@maths.ox.ac.uk',
     packages=find_packages(),
