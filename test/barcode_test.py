@@ -12,5 +12,7 @@ for k in range(3):
         print('Correct change of basis !')
 
 barcode=bbase.barcode(X,t)
+barcode_list=barcode=bbase.barcode(X,t,list=True)
+
 
 print(ans)
