@@ -1,4 +1,4 @@
-import setuptools
+from setuptools import setup
 
 setuptools.setup(
     name='bbase',
