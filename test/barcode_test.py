@@ -11,5 +11,5 @@ for k in range(3):
     if (A[k]==Y[k]).all():
         print('Correct change of basis !')
 
-ans=bbase.barcode(X,t,list=True)
+barcode=bbase.barcode(X,t,list=True)
 print(ans)
