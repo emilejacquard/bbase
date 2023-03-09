@@ -1,6 +1,6 @@
 # bbase
 
-# barcode-bases-and-ladders
+# Barcode Bases and Ladders
 
 # Overview
 
