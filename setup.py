@@ -7,5 +7,5 @@ setuptools.setup(
     author='Emile Jacquard',
     author_email='emile.jacquard@maths.ox.ac.uk',
     url='https://github.com/emilejacquard/bbase',
-    packages=['bbase']
+    packages=['bbase'],
 )
