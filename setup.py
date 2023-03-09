@@ -1,4 +1,6 @@
 from setuptools import setup, find_packages
+from bbase import __version__
+
 setuptools.setup(
     name='bbase',
     install_requires=['numpy'],
