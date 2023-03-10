@@ -41,5 +41,5 @@ barcode=bbase.barcode(X,t)
 barcode_as_list=bbase.barcode(X,t,list=True)
 ```
 
-## Barcode bases for persistence modules
+## Ladder persistence modules
 This is a direct implemation of Theorem 4.3: the decomposition of well behaved ladders (no nested bars on either the top or bottom row). No algorithm is presentend in the paper but the proof is constructive and this is the approach we take here.
