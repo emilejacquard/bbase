@@ -7,6 +7,7 @@
 This is a simple package which implements two algorithms from the paper [The Space of Barcode Bases for Persistence Modules](https://link.springer.com/article/10.1007/s41468-022-00094-6).
 
 ## Barcode bases for persistence modules
+This is an implimetation of Section 3, the algorithm for computing 
 
 A persistence module $V$ is a representation of a type $\mathbb{A}_\ell$ quiver $Q$:
 
@@ -40,3 +41,6 @@ bbase.bform(A,t,F,basis=False)
 barcode=bbase.barcode(X,t)
 barcode_as_list=bbase.barcode(X,t,list=True)
 ```
+
+## Barcode bases for persistence modules
+This is a direct implemation of Theorem 4.3: the decomposition of well behaved ladders (no nested bars on either the top or bottom row). 
