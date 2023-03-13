@@ -43,3 +43,5 @@ barcode_as_list=bbase.barcode(X,t,list=True)
 
 ## Ladder persistence modules
 This is a direct implemation of Theorem 4.3: the decomposition of well behaved ladders (no nested bars on either the top or bottom row). No algorithm is presentend in the paper but the proof is constructive and this is the approach we take here.
+
+A map of persistence module (equivalently, a ladder persistence module) $\phi_\bullet \colon (V_\bullet, f_\bullet) \mapsto (W_\bullet, h_\bullet)$ should be given as a dictionnary with keys $0$, $1$ and $(0,1)$. The values at $0$ and $1$ must be a list of $\ell$ matrices representing the linear maps $f_\bullet$ and $g_\bullet$ in some chosen bases, and the value  at $(0,1)$ should be a list of $\ell+1$ matrices representing the linear maps $\phi_\bullet$ in the same chosen bases.
