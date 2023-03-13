@@ -14,7 +14,7 @@ def rand_basis(X, t, F):
 
         else:
             x = np.random.randint(0, F.p, (v[i], v[i]))
-            if v[i]!=0:
+            if v[i] != 0:
                 while (F.inv_mat(x) == np.zeros((v[i], v[i]))).all():
                     x = np.random.randint(0, F.p - 1, (v[i], v[i]))
             G.append(x)
@@ -43,13 +43,13 @@ def basis_change(X, t, F, G=None, Q='path', keep=True):
             K, H = G[0], G[1]
 
         for k in range(l):
-            if X[k,k+1].shape!=(0,0):
+            if X[k, k + 1].shape != (0, 0):
                 X[k, k + 1] = F.matmul(K[k + 1], F.matmul(X[k, k + 1], F.inv_mat(K[k])))
-            if X[k+l+1,k+l+2].shape!=(0,0):
+            if X[k + l + 1, k + l + 2].shape != (0, 0):
                 X[k + l + 1, k + l + 2] = F.matmul(H[k + 1], F.matmul(X[k + l + 1, k + l + 2], F.inv_mat(H[k])))
-            if X[k,k+l+1].shape!=(0,0):
+            if X[k, k + l + 1].shape != (0, 0):
                 X[k, k + l + 1] = F.matmul(H[k], F.matmul(X[k, k + l + 1], F.inv_mat(K[k])))
-        if X[l,2*l+1].shape!=(0,0):
+        if X[l, 2 * l + 1].shape != (0, 0):
             X[l, 2 * l + 1] = F.matmul(H[l], F.matmul(X[l, 2 * l + 1], F.inv_mat(K[l])))
     if keep:
         return X

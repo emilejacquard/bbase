@@ -19,12 +19,13 @@ def create_mat(V, l, F, keep=False, bars=True, single=True):
     if keep:
         V = copy.deepcopy(V)
 
-    t, V1, V2 = [0] * l, [V[(k, k + 1)] for k in range(l)], [(V[(k, k + 1)]) for k in range(l + 1, 2 * l + 1)]
-    ladder = [V[(k, k + l + 1)] for k in range(l + 1)]
+    t = [0]*l
+    #V1, V2 = [0] * l, [V[(k, k + 1)] for k in range(l)], [(V[(k, k + 1)]) for k in range(l + 1, 2 * l + 1)]
+    #ladder = [V[(k, k + l + 1)] for k in range(l + 1)]
 
-    barcode_form(V1, t, F, ladder=[ladder, 'top'])
-    barcode_form(V2, t, F, ladder=[ladder, 'bot'])
-    d1, d2 = extract_barcode(V1, t, True), extract_barcode(V2, t, True)
+    barcode_form(V[0], t, F, ladder=[V[0,1], 'top'])
+    barcode_form(V[1], t, F, ladder=[V[0,1], 'bot'])
+    d1, d2 = extract_barcode(V[0], t, True), extract_barcode(V[1], t, True)
 
     if is_nested(d1, l):
         raise TypeError('Top barcode is nested')
@@ -56,11 +57,11 @@ def create_mat(V, l, F, keep=False, bars=True, single=True):
                     if bars:
                         indices[a, b, c, d] = [[row[c, d], d2[c, d][0] + row[c, d]],
                                                [col[a, b], d1[a, b][0] + col[a, b]]]
-                    X[row[c, d]:d2[c, d][0] + row[c, d], col[a, b]:d1[a, b][0] + col[a, b]] = ladder[a][
+                    X[row[c, d]:d2[c, d][0] + row[c, d], col[a, b]:d1[a, b][0] + col[a, b]] = V[0,1][a][
                         np.ix_(bot, top)]
                     M += d2[c, d][0]
                 else:
-                    X[a, b, c, d] = ladder[a][np.ix_(bot, top)]
+                    X[a, b, c, d] = V[0,1][a][np.ix_(bot, top)]
         if single:
             N += d1[a, b][0]
 

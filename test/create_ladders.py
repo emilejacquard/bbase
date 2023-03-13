@@ -45,7 +45,7 @@ def create_ladder_int(a, b, l, shift=False):
     return ans
 
 
-def create_rand_ladder(l, given=None):
+def create_rand_ladder(l, given=None, listify=True):
     L = []
     if given is None:
         mult = {}
@@ -55,7 +55,14 @@ def create_rand_ladder(l, given=None):
             mult[(a, b, '+')] = n
             mult[(a, b, '-')] = m
         else:
-            n, m = given[(a, b, '+')], given[(a, b, '-')]
+            if (a, b, '+') in given:
+                n = given[(a, b, '+')]
+            else:
+                n = 0
+            if (a, b, '-') in given:
+                m = given[(a, b, '-')]
+            else:
+                m = 0
 
         for k in range(n):
             L.append(create_ladder_int(a, b, l))
@@ -68,10 +75,25 @@ def create_rand_ladder(l, given=None):
                     n = random.randint(0, 1)
                     mult[(a, b, c, d)] = n
                 else:
-                    n = given[(a, b, c, d)]
+                    if (a,b,c,d) in given:
+                        n = given[(a, b, c, d)]
+                    else :
+                        n=0
                 for k in range(n):
                     L.append(create_ladder(a, b, c, d, l))
+    if listify:
+        if given is None:
+            return listify_ladder(direct_sums(L), l), mult
+        else:
+            return listify_ladder(direct_sums(L), l), given
+
     if given is None:
         return direct_sums(L), mult
     else:
         return direct_sums(L), given
+
+
+def listify_ladder(X, l):
+    ans = {0: [X[(k, k + 1)] for k in range(l)], 1: [(X[(k, k + 1)]) for k in range(l + 1, 2 * l + 1)],
+           (0, 1): [X[(k, k + l + 1)] for k in range(l + 1)]}
+    return ans

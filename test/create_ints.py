@@ -17,30 +17,8 @@ def direct_sums(L):
     return V
 
 
-def listify(X):
+def listify_int(X):
     return [X[(k, k + 1)] for k in range(len(X))]
-
-
-def rank(V):
-    r, l = {}, len(V)
-    for a in range(l + 1):
-        for b in range(a + 1, l + 1):
-            X = V[a]
-            for k in range(a + 1, b):
-                X = np.matmul(V[k], X)
-            r[a, b] = np.linalg.matrix_rank(X)
-    return r
-
-
-def bar_to_rank(bar,l):
-    r = {(i, j): 0 for i in range(l + 1) for j in range(i + 1, l + 1)}
-    for a in range(l + 1):
-        for b in range(a + 1, l + 1):
-            for x, y in bar:
-                if x <= a and y >= b:
-                    r[a, b] += bar[x, y]
-    return r
-
 
 def create_int(a, b, l, t, shift=False):
     X = {}
@@ -83,4 +61,4 @@ def create_rand_int(l, standard=False):
             mult[(a, b)] = n
             for k in range(n):
                 L.append(create_int(a, b, l, t))
-    return listify(direct_sums(L)), t, mult
+    return listify_int(direct_sums(L)), t, mult

@@ -1,26 +1,21 @@
 import bbase
-import timeit
-from create_ladders import create_rand_ladder
-p, l = 17, 2
-t = [0] * l
+import numpy as np
+
+l, p = 2, 11
 F = bbase.Field(p)
-go = True
-start = timeit.default_timer()
-if go:
-    for k in range(100):
-        V, mult = create_rand_ladder(l)
-        bbase.basis_change(V, t, F, Q='rectangle')
-        test = bbase.ladder_decomp(V, l, F)
-        for x in mult:
-            if x in test:
-                if test[x] != mult[x]:
-                    print('woops')
-                    break
-            else:
-                if mult[x] > 0:
-                    print('woopsies')
-                    break
+V = {0: [np.array([[6., 0., 2.],
+                   [3., 2., 4.],
+                   [9., 6., 5.],
+                   [6., 1., 4.]]), np.array([[2., 5., 1., 10.],
+                                             [9., 0., 6., 2.]])], 1: [np.array([[0., 1., 10., 1.],
+                                                                                [8., 7., 2., 6.],
+                                                                                [2., 7., 4., 7.]]),
+                                                                      np.array([[1., 7., 6.]])],
+     (0, 1): [np.array([[8., 9., 10.],
+                        [10., 1., 9.],
+                        [8., 7., 0.],
+                        [0., 2., 4.]]), np.array([[2., 3., 5., 4.],
+                                                  [8., 1., 7., 6.],
+                                                  [5., 2., 2., 7.]]), np.array([[0., 0.]])]}
 
-stop = timeit.default_timer()
-print(stop)
-
+mult = bbase.ladder_decomp(V, l, F)
