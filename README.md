@@ -44,4 +44,45 @@ barcode_as_list=bbase.barcode(X,t,list=True)
 ## Ladder persistence modules
 This is a direct implemation of Theorem 4.3: the decomposition of well behaved ladders (no nested bars on either the top or bottom row). No algorithm is presentend in the paper but the proof is constructive and this is the approach we take here.
 
-A map of persistence module (equivalently, a ladder persistence module) $\phi_\bullet \colon (V_\bullet, f_\bullet) \mapsto (W_\bullet, h_\bullet)$ should be given as a dictionnary with keys $0$, $1$ and $(0,1)$. The values at $0$ and $1$ must be a list of $\ell$ matrices representing the linear maps $f_\bullet$ and $g_\bullet$ in some chosen bases, and the value  at $(0,1)$ should be a list of $\ell+1$ matrices representing the linear maps $\phi_\bullet$ in the same chosen bases.
+A map of persistence module (equivalently, a ladder persistence module) $\phi_\bullet \colon (V_\bullet, f_\bullet) \mapsto (W_\bullet, h_\bullet)$ should be given as a dictionnary with keys $0$, $1$ and $(0,1)$. The values at $0$ and $1$ must be a list of $\ell$ matrices representing the linear maps $f_\bullet$ and $g_\bullet$ in some chosen bases, and the value  at $(0,1)$ should be a list of $\ell+1$ matrices representing the linear maps $\phi_\bullet$ in the same chosen bases. The main function of interest in then bbase.ladder_decomp.
+
+```python
+import bbase
+import numpy as np
+
+l, p = 2, 11
+F = bbase.Field(p)
+V = {0: [np.array([[6., 0., 2.],
+                   [3., 2., 4.],
+                   [9., 6., 5.],
+                   [6., 1., 4.]]), np.array([[2., 5., 1., 10.],
+                                             [9., 0., 6., 2.]])], 1: [np.array([[0., 1., 10., 1.],
+                                                                                [8., 7., 2., 6.],
+                                                                                [2., 7., 4., 7.]]),
+                                                                      np.array([[1., 7., 6.]])],
+     (0, 1): [np.array([[8., 9., 10.],
+                        [10., 1., 9.],
+                        [8., 7., 0.],
+                        [0., 2., 4.]]), np.array([[2., 3., 5., 4.],
+                                                  [8., 1., 7., 6.],
+                                                  [5., 2., 2., 7.]]), np.array([[0., 0.]])]}
+
+mult = bbase.ladder_decomp(V, l, F)
+```
+This decomposes $(V_\bullet, W_\bullet, \phi_\bullet)$ in a direct sum of admissible indecomposables (see Definition 4.2).
+The output is a dictionnary with possible keys :
+1) $(a,b,c,d)$ for $0 \leq c \leq a \leq d \leq b \leq \ell$ and value the multiplicity of the indecomposable $\textbf{R}^{[a,b]}_{[c,d]}$.
+2) $(i,j,+)$ for $0 \leq i \leq j \leq \ell$ and value the multiplicity of the indeomposable $\textbf{I}^+[i,j]$.
+3) $(i,j,-)$ for $0 \leq i \leq j \leq \ell$ and value the multiplicity of the indeomposable $\textbf{I}^-[i,j]$.
+
+An error is raised if either $V_\bullet$ or $W_\bullet$ have nested barcodes.
+
+## Installation 
+
+This may be installed via 
+
+```
+pip install git+https://github.com/emilejacquard/bbase
+```
+
+
