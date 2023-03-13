@@ -52,7 +52,7 @@ import numpy as np
 
 l, p = 2, 11
 F = bbase.Field(p)
-V = {0: [np.array([[6., 0., 2.],
+A = {0: [np.array([[6., 0., 2.],
                    [3., 2., 4.],
                    [9., 6., 5.],
                    [6., 1., 4.]]), np.array([[2., 5., 1., 10.],
@@ -67,7 +67,7 @@ V = {0: [np.array([[6., 0., 2.],
                                                   [8., 1., 7., 6.],
                                                   [5., 2., 2., 7.]]), np.array([[0., 0.]])]}
 
-mult = bbase.ladder_decomp(V, l, F)
+mult = bbase.ladder_decomp(A, l, F)
 ```
 This decomposes $(V_\bullet, W_\bullet, \phi_\bullet)$ in a direct sum of admissible indecomposables (see Definition 4.2).
 The output is a dictionnary with possible keys :
@@ -84,5 +84,7 @@ This may be installed via
 ```
 pip install git+https://github.com/emilejacquard/bbase
 ```
+This requires Python >=3.10.9 and Numpy >=1.24.2.
+
 
 
