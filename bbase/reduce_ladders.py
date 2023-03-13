@@ -5,6 +5,7 @@ import numpy as np
 import copy
 
 
+# Simply checks whether a barcode is nested or not.
 def is_nested(bar, l):
     for a in range(l - 1):
         for b in range(a + 2, l + 1):
@@ -15,17 +16,18 @@ def is_nested(bar, l):
     return False
 
 
-def create_mat(V, l, F, keep=False, bars=True, single=True):
+# Given a ladder A, we create a single matrix X representing all vertical linear
+# maps as in Step 1 of the proof of Theorem 4.3.
+
+def create_mat(A, l, F, keep=False, bars=True, single=True):
     if keep:
-        V = copy.deepcopy(V)
+        A = copy.deepcopy(A)
 
-    t = [0]*l
-    #V1, V2 = [0] * l, [V[(k, k + 1)] for k in range(l)], [(V[(k, k + 1)]) for k in range(l + 1, 2 * l + 1)]
-    #ladder = [V[(k, k + l + 1)] for k in range(l + 1)]
+    t = [0] * l
 
-    barcode_form(V[0], t, F, ladder=[V[0,1], 'top'])
-    barcode_form(V[1], t, F, ladder=[V[0,1], 'bot'])
-    d1, d2 = extract_barcode(V[0], t, True), extract_barcode(V[1], t, True)
+    barcode_form(A[0], t, F, ladder=[A[0, 1], 'top'])
+    barcode_form(A[1], t, F, ladder=[A[0, 1], 'bot'])
+    d1, d2 = extract_barcode(A[0], t, True), extract_barcode(A[1], t, True)
 
     if is_nested(d1, l):
         raise TypeError('Top barcode is nested')
@@ -57,11 +59,11 @@ def create_mat(V, l, F, keep=False, bars=True, single=True):
                     if bars:
                         indices[a, b, c, d] = [[row[c, d], d2[c, d][0] + row[c, d]],
                                                [col[a, b], d1[a, b][0] + col[a, b]]]
-                    X[row[c, d]:d2[c, d][0] + row[c, d], col[a, b]:d1[a, b][0] + col[a, b]] = V[0,1][a][
+                    X[row[c, d]:d2[c, d][0] + row[c, d], col[a, b]:d1[a, b][0] + col[a, b]] = A[0, 1][a][
                         np.ix_(bot, top)]
                     M += d2[c, d][0]
                 else:
-                    X[a, b, c, d] = V[0,1][a][np.ix_(bot, top)]
+                    X[a, b, c, d] = A[0, 1][a][np.ix_(bot, top)]
         if single:
             N += d1[a, b][0]
 
@@ -72,6 +74,8 @@ def create_mat(V, l, F, keep=False, bars=True, single=True):
         return X
 
 
+# This reduces the single matrix X outputed from the above function, as in
+# Step 3 of the proof of Theorem 4.3
 def reduce_mat(X, d1, d2, I, F):
     ans = {}
     for a, b in d1:
@@ -106,18 +110,20 @@ def local_snf(X, rows, cols, F):
     return ans
 
 
-def ladder_decomp(V, l, F, keep=False):
-    X, d1, d2, indices = create_mat(V, l, F, keep=keep)
+# This is the main function of interest, which takes as input a well-behaved ladder A and outputs
+# the multiplicities of its indecomposables as a dictionary.
+def ladder_decomp(A, l, F, keep=False):
+    X, d1, d2, indices = create_mat(A, l, F, keep=keep)
     return reduce_mat(X, d1, d2, indices, F)
 
 
-def extract_mult(V, d1, d2, I, l):
+def extract_mult(A, d1, d2, I, l):
     ans = {}
     d1 = copy.deepcopy(d1)
     d2 = copy.deepcopy(d2)
     for a, b, c, d in I:
         row, col = I[a, b, c, d][0], I[a, b, c, d][1]
-        ans[a, b, c, d] = np.linalg.matrix_rank(V[row[0]:row[1], col[0]:col[1]])
+        ans[a, b, c, d] = np.linalg.matrix_rank(A[row[0]:row[1], col[0]:col[1]])
         d1[a, b] -= ans[a, b, c, d]
         d2[c, d] -= ans[a, b, c, d]
     for a, b in lex_list(l):

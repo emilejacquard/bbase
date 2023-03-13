@@ -1,15 +1,19 @@
 import bbase
-import numpy as np
+from create_ints import create_rand_int
 
-A, t = [np.array([[6,2,5],[1,2,3]]), np.array([[0,0,3,2],[1,2,6,4]]), np.array([[1,5,3,6],[1,2,0,4]])], [0,1,0]
-F=bbase.Field(7)
-X,B=bbase.bform(A,t,F)
-Y=bbase.basis_change(X,t,F,B)
-for k in range(3):
-    if (A[k]==Y[k]).all():
-        print('Correct change of basis !')
+# Functions in the create_ints.py allow us to create persistence modules with known multiplicties of bars (for each
+# bar we randomly assign a multiplicity 0,1 or 2). The given matrix sequence is in barcode form. We then perform a
+# random change of basis and verify the output of bbase.barcode is correct.
 
-barcode=bbase.barcode(X,t)
-barcode_list=bbase.barcode(X,t,list=True)
-
-
+l, p = 10, 17
+F = bbase.Field(p)
+it = 10
+for k in range(it):
+    A, t, mult = create_rand_int(l)
+    bbase.basis_change(A, t, F, keep=False)
+    bbase.bform(A, t, F, basis=False)
+    ans = bbase.barcode(A, t)
+    for (i, j) in mult:
+        if mult[(i, j)] != ans[(i, j)]:
+            raise TypeError('Multiplicties at', (i, j), 'do not match')
+print('All multiplicties matched')

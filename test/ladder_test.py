@@ -1,21 +1,18 @@
 import bbase
-import numpy as np
+from create_ladders import create_rand_ladder, listify_ladder
 
-l, p = 2, 11
+# Similarly to barcode test, we use function from create_ladders to create create ladders in canonical matrix form (0
+# and 1 values). We then perform random basis changes and verify bbase.ladder_decomp gives the correct decomposition.
+# Note that we consider the case l=2 to ensure all ladders are well-behaved.
+
+l, p = 2, 17
 F = bbase.Field(p)
-V = {0: [np.array([[6., 0., 2.],
-                   [3., 2., 4.],
-                   [9., 6., 5.],
-                   [6., 1., 4.]]), np.array([[2., 5., 1., 10.],
-                                             [9., 0., 6., 2.]])], 1: [np.array([[0., 1., 10., 1.],
-                                                                                [8., 7., 2., 6.],
-                                                                                [2., 7., 4., 7.]]),
-                                                                      np.array([[1., 7., 6.]])],
-     (0, 1): [np.array([[8., 9., 10.],
-                        [10., 1., 9.],
-                        [8., 7., 0.],
-                        [0., 2., 4.]]), np.array([[2., 3., 5., 4.],
-                                                  [8., 1., 7., 6.],
-                                                  [5., 2., 2., 7.]]), np.array([[0., 0.]])]}
-
-mult = bbase.ladder_decomp(V, l, F)
+it = 10
+for k in range(it):
+    A, mult = create_rand_ladder(l, listify=False)
+    bbase.basis_change(A, [0] * l, F, Q='rectangle', keep=False)
+    ans = bbase.ladder_decomp(listify_ladder(A, l), l, F)
+    for indec in ans:
+        if mult[indec] != ans[indec]:
+            raise TypeError('Multiplicties at', indec, 'do not match')
+print('All multiplicties matched')

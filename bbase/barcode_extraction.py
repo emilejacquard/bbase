@@ -1,6 +1,12 @@
 err = 10 ** -10
 
 
+# The main function is bbase.barcode, which outputs the barcode of a given matrix sequence in barcode form (the
+# orientation t of the quiver should also be given). If the parameter list is set to True (by default False) the
+# output is given as a list of bars (with repeated bars if multiplicities are >1). Otherwise, the output is a
+# dictionary with keys potential bars (i,j) and values the associated multiplicities.
+
+
 def list_to_persim(l):
     persim = {}
     for i in range(len(l)):
@@ -8,11 +14,11 @@ def list_to_persim(l):
     return persim
 
 
-def barcode(V,t,list=False):
-    ans=extract_barcode(V,t)
+def barcode(V, t, list=False):
+    ans = extract_barcode(V, t)
     if list:
         barcode = []
-    else :
+    else:
         return ans
     for i, j in ans:
         for k in range(ans[(i, j)]):
