@@ -3,15 +3,17 @@ from bbase.barcode_extraction import extract_barcode, partial, lex_list
 from bbase.elementary import *
 import numpy as np
 import copy
+import warnings
 
 
 # Simply checks whether a barcode is nested or not.
 def is_nested(bar, l):
     for a in range(l - 1):
         for b in range(a + 2, l + 1):
-            for c in range(a + 1, b - 1):
-                for d in range(c, b - 1):
+            for c in range(a + 1, b):
+                for d in range(c, b):
                     if bar[(a, b)][0] > 0 and bar[(c, d)][0] > 0:
+                        #print((c, d), 'is nested in ', (a, b)) can be used to see which bars are nested
                         return True
     return False
 
@@ -30,9 +32,9 @@ def create_mat(A, l, F, keep=False, bars=True, single=True):
     d1, d2 = extract_barcode(A[0], t, True), extract_barcode(A[1], t, True)
 
     if is_nested(d1, l):
-        raise TypeError('Top barcode is nested')
+        warnings.warn('Top barcode is nested, results may be incorrect')
     if is_nested(d2, l):
-        raise TypeError('Bottom barcode is nested')
+        warnings.warn('Bottom barcode is nested, results may be incorrect')
 
     order, col, row = lex_list(l), {}, {}
     M, N = 0, 0
