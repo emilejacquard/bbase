@@ -50,22 +50,24 @@ A map of persistence module (equivalently, a ladder persistence module) $\phi_\b
 import bbase
 import numpy as np
 
-l, p = 2, 11
+l, p = 3, 11
 F = bbase.Field(p)
-A = {0: [np.array([[6., 0., 2.],
-                   [3., 2., 4.],
-                   [9., 6., 5.],
-                   [6., 1., 4.]]), np.array([[2., 5., 1., 10.],
-                                             [9., 0., 6., 2.]])], 1: [np.array([[0., 1., 10., 1.],
-                                                                                [8., 7., 2., 6.],
-                                                                                [2., 7., 4., 7.]]),
-                                                                      np.array([[1., 7., 6.]])],
-     (0, 1): [np.array([[8., 9., 10.],
-                        [10., 1., 9.],
-                        [8., 7., 0.],
-                        [0., 2., 4.]]), np.array([[2., 3., 5., 4.],
-                                                  [8., 1., 7., 6.],
-                                                  [5., 2., 2., 7.]]), np.array([[0., 0.]])]}
+A = {0: [array([[4.],
+       [8.],
+       [6.]]), array([[ 1.,  0.,  8.],
+       [ 1.,  3.,  9.],
+       [ 8., 10.,  0.]]), array([[ 8.,  9.,  6.],
+       [ 8., 10.,  9.]])], 
+     1: [array([[ 7.,  0., 10.],
+       [ 5.,  8.,  5.],
+       [ 3.,  0.,  1.]]), array([[ 2., 10.,  8.],
+       [ 4., 10.,  7.]]), array([[3., 3.]])],
+     (0, 1): [array([[0.],
+       [0.],
+       [0.]]), array([[2., 9., 5.],
+       [9., 6., 8.],
+       [4., 0., 1.]]), array([[3., 7., 9.],
+       [2., 4., 4.]]), array([[5., 1.]])]}
 
 mult = bbase.ladder_decomp(A, l, F)
 ```
@@ -75,7 +77,7 @@ The output is a dictionnary with possible keys :
 2) $(i,j,+)$ for $0 \leq i \leq j \leq \ell$ and value the multiplicity of the indeomposable $\textbf{I}^+[i,j]$.
 3) $(i,j,-)$ for $0 \leq i \leq j \leq \ell$ and value the multiplicity of the indeomposable $\textbf{I}^-[i,j]$.
 
-An error is raised if either $V_\bullet$ or $W_\bullet$ have nested barcodes.
+An warning is raised if either $V_\bullet$ or $W_\bullet$ have nested barcodes.
 
 ## Installation 
 
