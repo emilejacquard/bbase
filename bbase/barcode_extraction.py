@@ -180,11 +180,9 @@ def partial(b1, b2):
     return False
 
 
-def reorder(V, bar, ladder=None, indices=False):
+def reorder(V, bar, ladder=None):
     l = len(V)
     new_col = {k: [] for k in range(l + 1)}
-    if indices:
-        ans = {}
     order = lex_list(l)
     for i, j in order:
         for k in range(i, j + 1):
@@ -200,3 +198,4 @@ def reorder(V, bar, ladder=None, indices=False):
         if ladder[1] == 'bot':
             for k in range(l + 1):
                 ladder[0][k] = ladder[0][k][new_col[k], :]
+
