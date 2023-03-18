@@ -1,4 +1,4 @@
-d# bbase
+# bbase
 
 # Barcode Bases and Ladders
 
