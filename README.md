@@ -86,7 +86,7 @@ This may be installed via
 ```
 pip install git+https://github.com/emilejacquard/bbase
 ```
-This requires Python >=3.10.9 and Numpy >=1.24.2.
+This requires Python >=3.8.0 and Numpy >=1.24.2.
 
 
 
