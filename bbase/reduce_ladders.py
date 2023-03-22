@@ -1,9 +1,42 @@
 from bbase.barcode_form import barcode_form
-from bbase.barcode_extraction import extract_barcode, partial, lex_list
+from bbase.barcode_extraction import extract_barcode
 from bbase.elementary import *
 import numpy as np
 import copy
 import warnings
+
+
+def lex_list(l):
+    ans = []
+    for a in range(l + 1):
+        for b in range(a, l + 1):
+            ans.append((a, b))
+    return ans
+
+
+def lex(b1, b2):
+    if b1 == b2:
+        return False
+    if b1[0] < b2[0]:
+        return True
+    if b1[0] == b2[0]:
+        if b1[1] < b2[1]:
+            return True
+    return False
+
+
+def partial(b1, b2):
+    if b1[0] <= b2[0] <= b1[1] <= b2[1]:
+        return True
+    return False
+
+
+def smaller_lex(i, j):
+    ans = []
+    for a in reversed(range(i + 1)):
+        for b in reversed(range(i, j + 1)):
+            ans.append((a, b))
+    return ans
 
 
 # Simply checks whether a barcode is nested or not.
@@ -12,8 +45,8 @@ def is_nested(bar, l):
         for b in range(a + 2, l + 1):
             for c in range(a + 1, b):
                 for d in range(c, b):
-                    if bar[(a, b)][0] > 0 and bar[(c, d)][0] > 0:
-                        #print((c, d), 'is nested in ', (a, b)) can be used to see which bars are nested
+                    if (a, b) in bar and (c, d) in bar:
+                        # print((c, d), 'is nested in ', (a, b)) can be used to see which bars are nested
                         return True
     return False
 
@@ -39,10 +72,10 @@ def create_mat(A, l, F, keep=False, bars=True, single=True):
     order, col, row = lex_list(l), {}, {}
     M, N = 0, 0
     for b in order:
-        if d1[b][0] > 0:
+        if b in d1:
             col[b] = N
             N += d1[b][0]
-        if d2[b][0] > 0:
+        if b in d2:
             row[b] = M
             M += d2[b][0]
 
@@ -70,24 +103,23 @@ def create_mat(A, l, F, keep=False, bars=True, single=True):
             N += d1[a, b][0]
 
     if bars:
-        return X, {x: d1[x][0] for x in d1 if d1[x][0] > 0}, {x: d2[x][0] for x in reversed(list(d2.keys())) if
-                                                              d2[x][0]}, indices
+        return X, {x: d1[x][0] for x in d1}, {x: d2[x][0] for x in d2}, indices
     else:
         return X
 
 
 # This reduces the single matrix X outputed from the above function, as in
 # Step 3 of the proof of Theorem 4.3
-def reduce_mat(X, d1, d2, I, F):
+def reduce_mat(X, l, d1, d2, I, F):
     ans = {}
     for a, b in d1:
         ans[a, b, '+'] = d1[a, b]
     for c, d in d2:
         ans[c, d, '-'] = d2[c, d]
 
-    for a, b in d1:
-        for c, d in d2:
-            if partial((c, d), (a, b)):
+    for (a, b) in lex_list(l):
+        for (c, d) in smaller_lex(a, b):
+            if (a, b) in d1 and (c, d) in d2 and partial((c, d), (a, b)):
                 n = local_snf(X, I[a, b, c, d][0], I[a, b, c, d][1], F)
                 ans[a, b, c, d] = n
                 ans[a, b, '+'] -= n
@@ -116,7 +148,7 @@ def local_snf(X, rows, cols, F):
 # the multiplicities of its indecomposables as a dictionary.
 def ladder_decomp(A, l, F, keep=False):
     X, d1, d2, indices = create_mat(A, l, F, keep=keep)
-    return reduce_mat(X, d1, d2, indices, F)
+    return reduce_mat(X, l, d1, d2, indices, F)
 
 
 def extract_mult(A, d1, d2, I, l):

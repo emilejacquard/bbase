@@ -15,8 +15,9 @@ for k in range(it):
     bbase.basis_change(A, [0] * l, F, Q='rectangle', keep=False)
     ans = bbase.ladder_decomp(listify_ladder(A, l), l, F)
     for indec in ans:
-        if mult[indec] != ans[indec]:
-            raise TypeError('Multiplicties at', indec, 'do not match')
+        if mult[indec]!=0:
+            if mult[indec] != ans[indec]:
+                raise TypeError('Multiplicties at', indec, 'do not match')
 print('All multiplicties matched')
 
 

@@ -20,6 +20,7 @@ def direct_sums(L):
 def listify_int(X):
     return [X[(k, k + 1)] for k in range(len(X))]
 
+
 def create_int(a, b, l, t, shift=False):
     X = {}
     if shift:
@@ -58,7 +59,8 @@ def create_rand_int(l, standard=False):
     for a in range(l + 1):
         for b in range(a, l + 1):
             n = random.randint(0, 2)
-            mult[(a, b)] = n
-            for k in range(n):
-                L.append(create_int(a, b, l, t))
+            if n != 0:
+                mult[(a, b)] = n
+                for k in range(n):
+                    L.append(create_int(a, b, l, t))
     return listify_int(direct_sums(L)), t, mult

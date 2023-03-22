@@ -26,12 +26,25 @@ def barcode(V, t, list=False):
     return barcode
 
 
+def add_bar(i, j, d, vectors, v):
+    if not vectors:
+        if (i, j) in d:
+            d[i, j] += 1
+        else:
+            d[i, j] = 1
+    else:
+        if (i, j) in d:
+            d[i, j][0] += 1
+            d[i, j][1].append(v)
+        else:
+            d[i, j] = [0, []]
+            d[i, j][0] = 1
+            d[i, j][1] = [v]
+
+
 def extract_barcode(V, t, vectors=False):
     l = len(V)
-    if vectors:
-        d = {(i, j): [0, []] for i in range(l + 1) for j in range(i, l + 1)}
-    else:
-        d = {(i, j): 0 for i in range(l + 1) for j in range(i, l + 1)}
+    d = {}
     seq = []
     for i in range(l):
         seq, d = extend_sequence(V[i], t[i], seq, d, i, vectors)
@@ -41,36 +54,22 @@ def extract_barcode(V, t, vectors=False):
         for s in seq:
             if s[-1] != -1:
                 seen[s[-1]] = True
-                if vectors:
-                    d[l - len(s) + 1, l][0] += 1
-                    d[l - len(s) + 1, l][1].append(s[:])
-                else:
-                    d[l - len(s) + 1, l] += 1
+                add_bar(l - len(s) + 1, l, d, vectors, s[:])
+
         for i in range(V[-1].shape[0]):
             if not seen[i]:
-                if vectors:
-                    d[l, l][0] += 1
-                    d[l, l][1].append([i])
-                else:
-                    d[l, l] += 1
+                add_bar(l, l, d, vectors, [i])
+
     if t[-1] == 1:
         seen = {j: False for j in range(V[-1].shape[1])}
         for s in seq:
             if s[-1] != -1:
                 seen[s[-1]] = True
-                if vectors:
-                    d[l - len(s) + 1, l][0] += 1
-                    d[l - len(s) + 1, l][1].append(s[:])
-                else:
-                    d[l - len(s) + 1, l] += 1
+                add_bar(l - len(s) + 1, l, d, vectors, s[:])
 
         for j in range(V[-1].shape[1]):
             if not seen[j]:
-                if vectors:
-                    d[l, l][0] += 1
-                    d[l, l][1].append([j])
-                else:
-                    d[l, l] += 1
+                add_bar(l, l, d, vectors, [j])
 
     return d
 
@@ -91,11 +90,7 @@ def extend_sequence(A, a, seq, d, k, vectors=False):
                         stops = False
                         break
                 if stops:
-                    if vectors:
-                        d[k - len(s) + 1, k][0] += 1
-                        d[k - len(s) + 1, k][1].append(s[:])
-                    else:
-                        d[k - len(s) + 1, k] += 1
+                    add_bar(k - len(s) + 1, k, d, vectors, s[:])
                     s.append(-1)
 
         for j in seen:
@@ -107,11 +102,7 @@ def extend_sequence(A, a, seq, d, k, vectors=False):
                         stops = False
                         break
                 if stops:
-                    if vectors:
-                        d[k, k][0] += 1
-                        d[k, k][1].append([j])
-                    else:
-                        d[k, k] += 1
+                    add_bar(k, k, d, vectors, [j])
                     seq.append([j, -1])
 
     if a == 1:
@@ -129,11 +120,7 @@ def extend_sequence(A, a, seq, d, k, vectors=False):
                         stops = False
                         break
                 if stops:
-                    if vectors:
-                        d[k - len(s) + 1, k][0] += 1
-                        d[k - len(s) + 1, k][1].append(s[:])
-                    else:
-                        d[k - len(s) + 1, k] += 1
+                    add_bar(k - len(s) + 1, k, d, vectors, s[:])
                     s.append(-1)
 
         for i in seen:
@@ -145,39 +132,10 @@ def extend_sequence(A, a, seq, d, k, vectors=False):
                         stops = False
                         break
                 if stops:
-                    if vectors:
-                        d[k, k][0] += 1
-                        d[k, k][1].append([i])
-                    else:
-                        d[k, k] += 1
+                    add_bar(k, k, d, vectors, [i])
                     seq.append([i, -1])
 
     return seq, d
-
-
-def lex_list(l):
-    ans = []
-    for a in range(l + 1):
-        for b in range(a, l + 1):
-            ans.append((a, b))
-    return ans
-
-
-def lex(b1, b2):
-    if b1 == b2:
-        return False
-    if b1[0] < b2[0]:
-        return True
-    if b1[0] == b2[0]:
-        if b1[1] < b2[1]:
-            return True
-    return False
-
-
-def partial(b1, b2):
-    if b1[0] <= b2[0] <= b1[1] <= b2[1]:
-        return True
-    return False
 
 
 def reorder(V, bar, ladder=None):
@@ -198,4 +156,3 @@ def reorder(V, bar, ladder=None):
         if ladder[1] == 'bot':
             for k in range(l + 1):
                 ladder[0][k] = ladder[0][k][new_col[k], :]
-
